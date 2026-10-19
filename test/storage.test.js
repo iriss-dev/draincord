@@ -4,7 +4,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, unlinkSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { MemoryQueue, SqliteQueue } from '../dist/index.js';
+
+const req = createRequire(import.meta.url);
+
+const hasNativeSqlite = (() => {
+  try {
+    const sqlite = req('node:sqlite');
+    return typeof sqlite?.DatabaseSync === 'function';
+  } catch {
+    return false;
+  }
+})();
 
 test('storage - MemoryQueue basic push, popBatch and requeue', () => {
   const q = new MemoryQueue();
@@ -27,7 +39,8 @@ test('storage - MemoryQueue basic push, popBatch and requeue', () => {
   assert.equal(rePopped[0].tag, 'A');
 });
 
-test('storage - SqliteQueue persistence and recovery across instances', () => {
+
+test('storage - SqliteQueue persistence and recovery across instances', { skip: !hasNativeSqlite }, () => {
   const testDbPath = './.test_draincord_queue.db';
   if (existsSync(testDbPath)) unlinkSync(testDbPath);
 
@@ -55,3 +68,11 @@ test('storage - SqliteQueue persistence and recovery across instances', () => {
     if (existsSync(testDbPath + '-shm')) unlinkSync(testDbPath + '-shm');
   }
 });
+
+test('storage - SqliteQueue throws clear error on unsupported Node runtimes', { skip: hasNativeSqlite }, () => {
+  assert.throws(
+    () => new SqliteQueue(':memory:'),
+    /SqliteQueue requires Node\.js v22\.5\.0\+/
+  );
+});
+
