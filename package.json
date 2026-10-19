@@ -1,0 +1,51 @@
+{
+  "name": "draincord",
+  "version": "0.1.0",
+  "description": "Resilient Discord webhook log drain with smart batching, rate-limit backoff, and SQLite spooling.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "discord",
+    "webhook",
+    "logger",
+    "drain",
+    "rate-limit",
+    "sqlite",
+    "batching",
+    "queue"
+  ],
+  "author": "Iris <iriss.smith08@proton.me> (https://github.com/iriss-dev)",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iriss-dev/draincord.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iriss-dev/draincord/issues"
+  },
+  "homepage": "https://github.com/iriss-dev/draincord#readme",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
