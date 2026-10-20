@@ -23,6 +23,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
     "test": "node --test",
     "bench": "node bench/benchmark.js",
     "prepublishOnly": "npm run build && npm test"
