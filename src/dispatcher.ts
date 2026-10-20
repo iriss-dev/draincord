@@ -14,6 +14,7 @@ export type FetchFunction = typeof fetch;
 
 export class WebhookDispatcher {
   private webhookUrl: string;
+  private fallbackWebhookUrl?: string;
   private username?: string;
   private avatarUrl?: string;
   private fetchFn: FetchFunction;
@@ -21,11 +22,13 @@ export class WebhookDispatcher {
 
   constructor(options: {
     webhookUrl: string;
+    fallbackWebhookUrl?: string;
     username?: string;
     avatarUrl?: string;
     fetchFn?: FetchFunction;
   }) {
     this.webhookUrl = options.webhookUrl;
+    this.fallbackWebhookUrl = options.fallbackWebhookUrl;
     this.username = options.username;
     this.avatarUrl = options.avatarUrl;
     this.fetchFn = options.fetchFn || globalThis.fetch;
@@ -105,6 +108,9 @@ export class WebhookDispatcher {
       }
 
       if (!response.ok) {
+        if (this.fallbackWebhookUrl && response.status !== 429) {
+          return this.sendToUrl(this.fallbackWebhookUrl, payload);
+        }
         const errorText = await response.text().catch(() => '');
         return {
           ok: false,
@@ -117,6 +123,26 @@ export class WebhookDispatcher {
         ok: true,
         status: response.status
       };
+    } catch (err) {
+      if (this.fallbackWebhookUrl) {
+        return this.sendToUrl(this.fallbackWebhookUrl, payload);
+      }
+      return {
+        ok: false,
+        status: 0,
+        error: err instanceof Error ? err : new Error(String(err))
+      };
+    }
+  }
+
+  private async sendToUrl(url: string, payload: WebhookPayload): Promise<DispatchResult> {
+    try {
+      const res = await this.fetchFn(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return { ok: res.ok, status: res.status };
     } catch (err) {
       return {
         ok: false,

@@ -5,6 +5,7 @@ export { Draincord } from './draincord.js';
 export { MemoryQueue, SqliteQueue } from './storage.js';
 export { WebhookDispatcher, type DispatchResult, type FetchFunction } from './dispatcher.js';
 export { chunkEntries, entryToEmbed, estimateEmbedLength, LEVEL_COLORS } from './formatter.js';
+export { createDraincordStream, type StreamAdapterOptions } from './stream.js';
 export type {
   DiscordEmbed,
   DraincordOptions,

@@ -22,6 +22,7 @@
   "scripts": {
     "build": "tsc",
     "test": "node --test",
+    "bench": "node bench/benchmark.js",
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [

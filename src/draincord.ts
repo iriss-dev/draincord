@@ -41,6 +41,7 @@ export class Draincord {
 
     this.dispatcher = new WebhookDispatcher({
       webhookUrl: options.webhookUrl,
+      fallbackWebhookUrl: options.fallbackWebhookUrl,
       username: options.username,
       avatarUrl: options.avatarUrl,
       fetchFn: options.fetchFn

@@ -61,6 +61,7 @@ export interface QueueStorage {
 
 export interface DraincordOptions {
   webhookUrl: string;
+  fallbackWebhookUrl?: string;
   username?: string;
   avatarUrl?: string;
   flushIntervalMs?: number;
